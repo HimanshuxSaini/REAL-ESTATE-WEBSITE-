@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowRight, ShieldCheck, CheckCircle2, Award } from 'lucide-react';
+import { ArrowRight, ShieldCheck, CheckCircle2, Award, Sparkles } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface HeroSectionProps {
   onExploreClick: () => void;
@@ -21,7 +22,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           {/* Left Column: Headlines & Call to Actions */}
           <div className="lg:col-span-6 space-y-6 text-left">
             
-            {/* Top Subtitle Badge - Matches Screenshot */}
+            {/* Top Subtitle Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#ede5d8]/80 border border-[#e0d2bf] text-[11px] sm:text-xs font-semibold tracking-wider text-[#1d3d30] uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-[#b47b3b]"></span>
               PREMIUM PROPERTIES IN ROHTAK, SONIPAT, PANIPAT, JIND & DELHI NCR
@@ -41,7 +42,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               Discover the right property in the right location with Jagannath Properties. Your trusted real estate partner for residential, commercial and investment properties.
             </p>
 
-            {/* CTAs matching screenshot */}
+            {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <button
                 onClick={onExploreClick}
@@ -59,7 +60,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </button>
             </div>
 
-            {/* Quick Trust Badges for Indian Real Estate Buyers */}
+            {/* Quick Trust Badges */}
             <div className="pt-4 grid grid-cols-3 gap-3 border-t border-[#ebd8c2]/80 text-xs text-slate-600">
               <div className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-[#b47b3b] shrink-0" />
@@ -77,49 +78,76 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
           </div>
 
-          {/* Right Column: Hero Visual with Floating Badge - Matches Screenshot */}
-          <div className="lg:col-span-6 relative">
-            <div className="relative mx-auto max-w-lg lg:max-w-none">
-              
-              {/* Main Luxury Architectural Villa Visual */}
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white/80 bg-slate-900 group">
+          {/* Right Column: Hero Visual - Sliding in from right */}
+          <div className="lg:col-span-6 relative overflow-hidden lg:overflow-visible">
+            <motion.div
+              initial={{ x: 140, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{
+                duration: 1.0,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.1
+              }}
+              className="relative mx-auto max-w-lg lg:max-w-none flex items-center justify-center"
+            >
+              {/* Warm Ambient Glow behind the architectural model */}
+              <div className="absolute -inset-6 bg-gradient-to-tr from-[#b47b3b]/20 via-[#1b4332]/10 to-amber-400/15 rounded-full blur-3xl -z-10 pointer-events-none transform -translate-y-2"></div>
+
+              {/* Gentle floating motion container */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className="relative w-full flex items-center justify-center"
+              >
+                {/* Main Cut-out 3D Architectural Villa in Hand */}
                 <img
-                  src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=85"
-                  alt="Modern Luxury Dream House"
-                  className="w-full h-[360px] sm:h-[440px] lg:h-[470px] object-cover group-hover:scale-105 transition-transform duration-700"
+                  src="/images/banners/MAIN BANNER.png"
+                  alt="Modern Luxury Dream House Model - Jagannath Properties"
+                  className="w-full max-h-[420px] sm:max-h-[500px] lg:max-h-[540px] object-contain drop-shadow-[0_20px_35px_rgba(20,54,41,0.25)] select-none transition-transform duration-500 hover:scale-[1.02]"
                 />
-                
-                {/* Subtle gradient vignette */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none"></div>
 
-                {/* Bottom Left Badge in Villa photo */}
-                <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-lg border border-white flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#1b4332] text-white flex items-center justify-center">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+                {/* Floating Badge in Top Right */}
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0, x: 40 }}
+                  animate={{ scale: 1, opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute -top-2 right-2 sm:top-2 sm:right-4 z-20 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-2xl shadow-xl border border-[#e2d5c3] flex items-center gap-3"
+                >
+                  <div className="w-9 h-9 rounded-full bg-[#FAF3E8] border border-[#d9ba88] flex items-center justify-center text-[#b47b3b] shadow-xs shrink-0">
+                    <Award className="w-5 h-5 text-[#b47b3b]" />
                   </div>
-                  <div>
-                    <p className="text-[11px] text-slate-500 font-medium uppercase leading-tight">Featured Project</p>
-                    <p className="text-xs font-bold text-slate-900">Sonipat & Rohtak Sectors</p>
+                  <div className="text-left">
+                    <p className="text-xs font-bold text-[#142620] leading-tight">
+                      Trusted Real Estate Partner
+                    </p>
+                    <p className="text-[11px] text-slate-500 leading-tight">
+                      in Haryana & Delhi NCR
+                    </p>
                   </div>
-                </div>
-              </div>
+                </motion.div>
 
-              {/* Floating Badge in Top Right of image - Matches Screenshot */}
-              <div className="absolute -top-3 -right-2 sm:-top-5 sm:right-4 z-20 bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-xl shadow-xl border border-[#e2d5c3] flex items-center gap-3 animate-in fade-in zoom-in-95">
-                <div className="w-9 h-9 rounded-full bg-[#FAF3E8] border border-[#d9ba88] flex items-center justify-center text-[#b47b3b]">
-                  <Award className="w-5 h-5 text-[#b47b3b]" />
-                </div>
-                <div className="text-left">
-                  <p className="text-xs font-bold text-[#142620] leading-tight">
-                    Trusted Real Estate Partner
-                  </p>
-                  <p className="text-[11px] text-slate-500 leading-tight">
-                    in Haryana & Delhi NCR
-                  </p>
-                </div>
-              </div>
+                {/* Floating Badge in Bottom Left */}
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0, x: -30 }}
+                  animate={{ scale: 1, opacity: 1, x: 0 }}
+                  transition={{ duration: 0.8, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute bottom-2 left-2 sm:bottom-4 sm:left-4 z-20 bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-xl border border-white flex items-center gap-3"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-[#143629] text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <Sparkles className="w-4 h-4 text-amber-300" />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[11px] text-slate-500 font-medium uppercase leading-tight">Verified Listings</p>
+                    <p className="text-xs font-bold text-slate-900">100% Registry & Mutation</p>
+                  </div>
+                </motion.div>
 
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
 
         </div>
