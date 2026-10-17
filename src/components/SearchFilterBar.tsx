@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, MapPin, Home, IndianRupee, RotateCcw } from 'lucide-react';
+import { Search, MapPin, Home, KeyRound, Map, Building2, IndianRupee, ChevronDown, ArrowRight, RotateCcw } from 'lucide-react';
 import { TransactionType, PropertyCategory, CityLocation } from '../types';
 
 interface SearchFilterBarProps {
@@ -31,11 +31,11 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   onSearchExecute,
   onResetFilters
 }) => {
-  const transactionTabs: { id: TransactionType; label: string }[] = [
-    { id: 'buy', label: 'Buy' },
-    { id: 'rent', label: 'Rent' },
-    { id: 'plots', label: 'Plots' },
-    { id: 'commercial', label: 'Commercial' },
+  const transactionTabs: { id: TransactionType; label: string; icon: React.ReactNode }[] = [
+    { id: 'buy', label: 'Buy', icon: <Home className="w-4 h-4" /> },
+    { id: 'rent', label: 'Rent', icon: <KeyRound className="w-4 h-4" /> },
+    { id: 'plots', label: 'Plots', icon: <Map className="w-4 h-4" /> },
+    { id: 'commercial', label: 'Commercial', icon: <Building2 className="w-4 h-4" /> },
   ];
 
   const propertyTypes: PropertyCategory[] = [
@@ -65,60 +65,133 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     { value: 'rent-20k-50k', label: 'Rent: ₹20,000 - ₹50,000 /mo' }
   ];
 
-  return (
-    <div className="max-w-6xl mx-auto px-4 -mt-8 relative z-30">
-      <div className="bg-white rounded-2xl shadow-xl border border-[#ebd8c2]/80 p-5 md:p-6 backdrop-blur-sm">
-        
-        {/* Transaction Tabs - Matches Screenshot */}
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-5 border-b border-slate-100 pb-4">
-          <div className="bg-[#f4efe8] p-1 rounded-xl flex items-center gap-1">
-            {transactionTabs.map((tab) => {
-              const isActive = activeTransaction === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => onTransactionChange(tab.id)}
-                  className={`px-5 py-2 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
-                    isActive
-                      ? 'bg-[#143629] text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
+  const isFiltered = selectedType !== 'all' || selectedLocation !== 'all' || selectedBudget !== 'all' || searchQuery.trim() !== '' || activeTransaction !== 'buy';
 
-          {/* Quick Keyword Search Input */}
-          <div className="flex-1 min-w-[200px] ml-auto">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search colony, sector, or landmark (e.g. Sector 14, GT Road)..."
-                value={searchQuery}
-                onChange={(e) => onSearchQueryChange(e.target.value)}
-                className="w-full text-xs sm:text-sm pl-8 pr-3 py-2 rounded-lg border border-slate-200 focus:border-[#b47b3b] focus:outline-hidden focus:ring-1 focus:ring-[#b47b3b] bg-slate-50/50"
-              />
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-            </div>
+  const selectedBudgetLabel = budgetOptions.find(b => b.value === selectedBudget)?.label || 'Any Budget';
+
+  return (
+    <section id="search-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-10 relative z-30">
+      
+      {/* Outer Floating Search Card Frame */}
+      <div className="flex flex-col xl:flex-row items-center gap-4 xl:gap-5">
+
+        {/* Left Architectural Villa Capsule (Matching Reference Image) */}
+        <div className="hidden xl:flex items-center justify-center shrink-0 relative self-end mb-1">
+          {/* Soft decorative background circles from mockup */}
+          <div className="absolute -top-3 -left-3 w-28 h-28 bg-[#ebd9c2] rounded-full opacity-60 blur-xs"></div>
+          <div className="absolute -bottom-2 -right-1 w-20 h-20 bg-[#dfcaa9] rounded-full opacity-50"></div>
+          
+          {/* Framed luxury architectural villa */}
+          <div className="relative w-40 h-40 rounded-[2.2rem] overflow-hidden border-4 border-white shadow-xl bg-slate-900 group">
+            <img
+              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=480&q=85"
+              alt="Luxury Architecture"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
           </div>
         </div>
 
-        {/* Form Controls Row - Matches Screenshot */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4 items-end">
-          
-          {/* Property Type Dropdown */}
-          <div className="space-y-1.5 text-left">
-            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-              <Home className="w-3.5 h-3.5 text-[#b47b3b]" />
-              Property Type
-            </label>
-            <div className="relative">
+        {/* Main Search Controls Stack */}
+        <div className="flex-1 w-full space-y-2.5">
+
+          {/* Top Floating Row: Left Tabs & Right Location Pill */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-end justify-between gap-3">
+            
+            {/* Top Navigation Row: Buy, Rent, Plots, Commercial */}
+            <div className="inline-flex items-center gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-1.5 rounded-2xl sm:rounded-t-2xl sm:rounded-b-lg border border-[#ebd8c2]/80 shadow-sm w-fit">
+              {transactionTabs.map((tab) => {
+                const isActive = activeTransaction === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => onTransactionChange(tab.id)}
+                    type="button"
+                    className={`relative flex flex-col items-center justify-center px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all duration-200 cursor-pointer ${
+                      isActive
+                        ? 'bg-[#16382b] text-white shadow-md'
+                        : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100/70'
+                    }`}
+                  >
+                    <span className={`mb-1 transition-transform duration-200 ${isActive ? 'scale-105 text-white' : 'text-slate-600'}`}>
+                      {tab.icon}
+                    </span>
+                    <span className="tracking-wide font-semibold">{tab.label}</span>
+
+                    {/* Active bottom notch matching reference image */}
+                    {isActive && (
+                      <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-x-4 border-x-transparent border-t-[6px] border-t-[#16382b]"></span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Top Right Floating Pill (Matching Reference Image) */}
+            <div className="hidden sm:inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[#faf5eb]/95 backdrop-blur-md border border-[#ebd8c2] shadow-sm text-left self-end">
+              <div className="w-8 h-8 rounded-full bg-[#f3e6d3] flex items-center justify-center text-[#8c6843] shrink-0">
+                <Building2 className="w-4 h-4 text-[#8c6843]" />
+              </div>
+              <div>
+                <p className="text-[11px] font-medium text-slate-500 leading-tight">Find Properties in</p>
+                <p className="text-xs sm:text-[13px] font-bold text-slate-900 tracking-tight leading-tight">
+                  Rohtak, Sonipat, Panipat, Jind & Delhi NCR
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Middle Row: Full-Width Location Search Field */}
+          <div className="relative">
+            <div className="relative flex items-center bg-white rounded-full border border-[#ebd8c2] shadow-[0_8px_25px_rgba(0,0,0,0.06)] hover:border-[#b47b3b]/70 transition-all px-4 sm:px-6 py-3.5 sm:py-4">
+              <Search className="w-5 h-5 sm:w-6 sm:h-6 text-[#b47b3b] shrink-0 mr-3" strokeWidth={2.4} />
+              <input
+                type="text"
+                placeholder="Search colony, sector, landmark or project..."
+                value={searchQuery}
+                onChange={(e) => onSearchQueryChange(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && onSearchExecute()}
+                className="w-full bg-transparent text-slate-800 placeholder:text-slate-400 text-sm sm:text-base font-medium focus:outline-none"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => onSearchQueryChange('')}
+                  className="text-xs text-slate-400 hover:text-slate-600 px-2.5 py-1 rounded-full hover:bg-slate-100 transition-colors cursor-pointer mr-1 font-medium"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom Row: Three Dropdown Filters + Search Properties Button */}
+          <div className="bg-white rounded-2xl sm:rounded-full border border-[#ebd8c2] shadow-[0_12px_36px_rgba(20,54,41,0.08)] p-2.5 sm:p-2 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 lg:gap-2">
+            
+            {/* Filter 1: Property Type */}
+            <div className="relative flex-1 group">
+              <div className="flex items-center gap-3 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full hover:bg-[#FAF8F5] transition-colors cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-[#eaf4ed] text-[#16382b] flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
+                  <Home className="w-4 h-4 text-[#16382b]" />
+                </div>
+                <div className="flex-1 text-left min-w-0">
+                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider leading-none mb-1">
+                    Property Type
+                  </p>
+                  <p className="text-sm font-bold text-slate-800 truncate leading-tight">
+                    {selectedType === 'all' ? 'All Types' : selectedType}
+                  </p>
+                </div>
+                <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0 ml-1" />
+              </div>
+              
+              {/* Native Select Overlay */}
               <select
                 value={selectedType}
                 onChange={(e) => onTypeChange(e.target.value)}
-                className="w-full bg-[#FAF8F5] border border-slate-200 hover:border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-800 font-medium focus:outline-hidden focus:ring-2 focus:ring-[#b47b3b]/30 focus:border-[#b47b3b] transition-all cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                aria-label="Select Property Type"
               >
                 <option value="all">All Types</option>
                 {propertyTypes.map((type) => (
@@ -128,19 +201,32 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 ))}
               </select>
             </div>
-          </div>
 
-          {/* Location Dropdown */}
-          <div className="space-y-1.5 text-left">
-            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-[#b47b3b]" />
-              Location
-            </label>
-            <div className="relative">
+            {/* Subtle Divider */}
+            <div className="hidden lg:block w-px h-8 bg-slate-200/80"></div>
+
+            {/* Filter 2: Location */}
+            <div className="relative flex-1 group">
+              <div className="flex items-center gap-3 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full hover:bg-[#FAF8F5] transition-colors cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-[#f8efe2] text-[#b47b3b] flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
+                  <MapPin className="w-4 h-4 text-[#b47b3b]" />
+                </div>
+                <div className="flex-1 text-left min-w-0">
+                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider leading-none mb-1">
+                    Location
+                  </p>
+                  <p className="text-sm font-bold text-slate-800 truncate leading-tight">
+                    {selectedLocation === 'all' ? 'Search Location or Area' : selectedLocation}
+                  </p>
+                </div>
+                <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0 ml-1" />
+              </div>
+              
               <select
                 value={selectedLocation}
                 onChange={(e) => onLocationChange(e.target.value)}
-                className="w-full bg-[#FAF8F5] border border-slate-200 hover:border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-800 font-medium focus:outline-hidden focus:ring-2 focus:ring-[#b47b3b]/30 focus:border-[#b47b3b] transition-all cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                aria-label="Select Location"
               >
                 <option value="all">Search Location or Area</option>
                 {locations.map((loc) => (
@@ -150,19 +236,32 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 ))}
               </select>
             </div>
-          </div>
 
-          {/* Budget Dropdown */}
-          <div className="space-y-1.5 text-left">
-            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-              <IndianRupee className="w-3.5 h-3.5 text-[#b47b3b]" />
-              Budget
-            </label>
-            <div className="relative">
+            {/* Subtle Divider */}
+            <div className="hidden lg:block w-px h-8 bg-slate-200/80"></div>
+
+            {/* Filter 3: Budget */}
+            <div className="relative flex-1 group">
+              <div className="flex items-center gap-3 px-3.5 py-2.5 sm:py-2 rounded-xl sm:rounded-full hover:bg-[#FAF8F5] transition-colors cursor-pointer">
+                <div className="w-10 h-10 rounded-full bg-[#eaf4ed] text-[#16382b] flex items-center justify-center shrink-0 transition-transform group-hover:scale-105">
+                  <IndianRupee className="w-4 h-4 text-[#16382b]" />
+                </div>
+                <div className="flex-1 text-left min-w-0">
+                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider leading-none mb-1">
+                    Budget
+                  </p>
+                  <p className="text-sm font-bold text-slate-800 truncate leading-tight">
+                    {selectedBudgetLabel}
+                  </p>
+                </div>
+                <ChevronDown className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors shrink-0 ml-1" />
+              </div>
+
               <select
                 value={selectedBudget}
                 onChange={(e) => onBudgetChange(e.target.value)}
-                className="w-full bg-[#FAF8F5] border border-slate-200 hover:border-slate-300 rounded-xl px-3.5 py-3 text-sm text-slate-800 font-medium focus:outline-hidden focus:ring-2 focus:ring-[#b47b3b]/30 focus:border-[#b47b3b] transition-all cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                aria-label="Select Budget Range"
               >
                 {budgetOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -171,32 +270,36 @@ export const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
                 ))}
               </select>
             </div>
-          </div>
 
-          {/* Action Button - Matches Screenshot */}
-          <div className="flex gap-2">
-            <button
-              onClick={onSearchExecute}
-              className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-[#b47b3b] to-[#c78b47] hover:from-[#9c682e] hover:to-[#b0783a] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Search className="w-4 h-4" />
-              <span>Search Properties</span>
-            </button>
+            {/* Actions: Search Button & Reset */}
+            <div className="flex items-center gap-2 pt-1 sm:pt-0">
+              {isFiltered && (
+                <button
+                  type="button"
+                  onClick={onResetFilters}
+                  className="w-10 h-10 rounded-full border border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+                  title="Reset All Filters"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </button>
+              )}
 
-            {(selectedType !== 'all' || selectedLocation !== 'all' || selectedBudget !== 'all' || searchQuery || activeTransaction !== 'buy') && (
               <button
-                onClick={onResetFilters}
-                className="p-3 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
-                title="Reset Filters"
+                type="button"
+                onClick={onSearchExecute}
+                className="flex-1 sm:flex-initial bg-[#16382b] hover:bg-[#0e271d] text-white font-semibold text-sm sm:text-base px-7 sm:px-9 py-3.5 rounded-full flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer whitespace-nowrap group"
               >
-                <RotateCcw className="w-4 h-4" />
+                <span>Search Properties</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
-            )}
+            </div>
+
           </div>
 
         </div>
 
       </div>
-    </div>
+
+    </section>
   );
 };
