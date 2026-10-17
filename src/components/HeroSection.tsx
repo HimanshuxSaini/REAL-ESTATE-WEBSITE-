@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, ShieldCheck, CheckCircle2, Award } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface HeroSectionProps {
@@ -52,23 +52,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 Contact Us
               </button>
             </div>
-
-            {/* Quick Trust Badges */}
-            <div className="pt-6 grid grid-cols-3 gap-4 border-t border-[#ebd8c2]/80 text-xs sm:text-sm text-slate-600">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-[#b47b3b] shrink-0" />
-                <span className="font-medium">100% Verified Titles</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-[#143629] shrink-0" />
-                <span className="font-medium">RERA Compliant</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 sm:w-5 sm:h-5 text-[#b47b3b] shrink-0" />
-                <span className="font-medium">Free Site Visits</span>
-              </div>
-            </div>
-
           </div>
 
           {/* Right Column: Hero Visual - Sliding in from right */}
